@@ -24,14 +24,23 @@ class BayesianLinearRegression:
 
     P(y|x,beta) ~ N(y|x.dot(beta),sigma**2)
   """
-  def __init__(self, lamb=20,sigma=5,fit_intercept=True):
-    self.lamb = lamb
+  def __init__(self, lamb=[20.,20.], beta_mu=[0.,0.], sigma=5, fit_intercept=True):
+    """
+      lamb: variance of the prior for each of the feature dimensions.
+      beta_mu: the mean of the prior
+      sigma: variance of the prediction error.
+
+      TODO: don't expect the data dimension to be 2 for the default args
+    """
+    self.inv_lamb = 1./np.asarray(lamb)
+    self.beta_mu  = np.asarray(beta_mu)
+
     self.sigma = sigma
     self.fit_intercept = fit_intercept
 
   def add_intercept(self, X):
     X_new = np.ones((X.shape[0],X.shape[1]+1), dtype=X.dtype)
-    X_new[:,:-1] = X[:,:]
+    X_new[:,1:] = X[:,:]
     return X_new
 
   def fit_ml(self, X, y):
@@ -47,10 +56,11 @@ class BayesianLinearRegression:
     if self.fit_intercept:
       X = self.add_intercept(X)
     sigma = self.sigma
-    lmbd  = self.lamb
-    l = sigma*sigma/lmbd * np.eye(X.shape[1],X.shape[1])
+    l = sigma**2 * np.diagflat(self.inv_lamb)
     s = LA.inv(X.T.dot(X)+l)
-    self.beta = s.dot(X.T.dot(y))
+    b0 = sigma**2 * np.diagflat(self.inv_lamb).dot(self.beta_mu)
+
+    self.beta = s.dot(X.T.dot(y) + b0)
     if full_posterior:
       self.Sigma = sigma * sigma * s
 
