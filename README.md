@@ -14,7 +14,6 @@ Example output:
 The library can do calculate both ML and MAP estimates for linear regression models.
 If request the full posterior distribution over the parameters will be calculated:
 
-https://raw.github.com/tdomhan/pyblr/master/plots/posterior.png
 ![example posterior](https://raw.github.com/tdomhan/pyblr/master/plots/posterior.png)
 
 Model
