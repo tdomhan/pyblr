@@ -18,7 +18,7 @@ y_train = np.loadtxt("../test-data/Ytrain.txt")
 
 n_samples = [2,10,100]
 
-clf = blr.BayesianLinearRegression(lamb=20, sigma=5)
+clf = blr.BayesianLinearRegression(lamb=20, sigma=5, fit_intercept=False)
 
 
 for n in n_samples:
