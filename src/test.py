@@ -4,6 +4,8 @@
 
 import blr
 import numpy as np
+from numpy.random import multivariate_normal
+from numpy import linalg as LA
 
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
@@ -58,6 +60,38 @@ clf = blr.BayesianLinearRegression(
 #let's do some interesting plots:
 
 
+fig = plt.figure(figsize=(20,8))
+for i,n in enumerate(n_samples):
+    X = Xtrain[:n]
+    y = y_train[:n]
+
+    clf.fit_map(X,y)
+    beta_map = clf.beta
+    error_map = mse(Xtest,y_test,clf)
+    Sigma = clf.Sigma
+#    Sigma_inv = LA.inv(Sigma)
+
+    clf.fit_ml(X,y)
+    beta_ml = clf.beta
+    error_ml = mse(Xtest,y_test,clf)
+
+    ax=plt.subplot(1,3,i+1)
+    ax.set_xlim(0,1)
+    ax.set_ylim(-10,40)
+   #draw from posterior:
+    for i in range(0,10000):
+      beta = multivariate_normal(beta_map, Sigma)
+      ax.plot([0, 1.0], [beta[0], beta[0]+1.0*beta[1]], color='k', linestyle='-', linewidth=1,zorder=1, alpha=0.03)
+    ax.plot([0, 1.0], [beta_ml[0], beta_ml[0]+1.0*beta_ml[1]], linestyle='-', linewidth=2, label="ML",zorder=100)
+    ax.plot([0, 1.0], [beta_map[0], beta_map[0]+1.0*beta_map[1]], linestyle='-', linewidth=2, label="MAP",zorder=100)
+
+    ax.scatter(X[:,1],y, marker="o", color='r', edgecolor="white", s=100,zorder=10)
+ 
+    plt.legend()
+    plt.title("training cases: %d" % n)
+
+fname = "ml_vs_map.png"
+fig.savefig(fname)
 
 
 
