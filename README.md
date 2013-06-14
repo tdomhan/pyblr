@@ -1,6 +1,9 @@
 pyblr
 =====
 
+Description
+-----------
+
 Bayesian Linear Regression for python.
 
 Very basic implementation of [Bayesian Linear Regression](http://en.wikipedia.org/wiki/Bayesian_linear_regression).
@@ -10,3 +13,8 @@ Example output:
 
 The library can do calculate both ML and MAP estimates for linear regression models.
 If request the full posterior distribution over the parameters will be calculated.
+
+
+Model
+-----
+TODO
